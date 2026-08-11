@@ -1,0 +1,2 @@
+node_modules/ .expo/ dist/ web-build/ .env .env.local .DS_Store
+node_modules
