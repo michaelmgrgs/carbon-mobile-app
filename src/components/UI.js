@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     padding: 18,
   },
   btnWrap: { borderRadius: radius.pill, overflow: 'hidden' },
-  btn: { paddingVertical: 16, alignItems: 'center', justifyContent: 'center' },
+  btn: { paddingVertical: 16, paddingHorizontal: 28, alignItems: 'center', justifyContent: 'center' },
   btnText: { color: colors.white, fontWeight: '700', fontSize: 16, letterSpacing: 0.3 },
   ghostBtn: {
     paddingVertical: 14, alignItems: 'center', justifyContent: 'center',

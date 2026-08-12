@@ -44,7 +44,7 @@
       ]
     ],
     "extra": {
-      "apiBaseUrl": "https://your-carbon-backend.example.com/api/mobile"
+      "apiBaseUrl": "http://192.168.1.160:3000/api/mobile"
     }
   }
 }

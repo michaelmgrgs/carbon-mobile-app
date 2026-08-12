@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../services/api';
@@ -29,29 +29,39 @@ export default function AttendanceScreen() {
   );
 }
 
+// Scan states: 'idle' (camera active) -> 'processing' (camera OFF, checking in)
+// -> 'result' (camera OFF, showing outcome) -> back to 'idle' only when user taps "Scan Again".
+// The camera is only ever mounted in 'idle', so it physically cannot fire more
+// barcode events while a check-in is in flight or a result is showing.
 function ScanTab() {
   const [permission, requestPermission] = useCameraPermissions();
-  const [scanned, setScanned] = useState(false);
-  const [checking, setChecking] = useState(false);
-  const lockRef = useRef(false);
+  const [state, setState] = useState('idle');
+  const [result, setResult] = useState(null); // { success, title, message }
 
   const handleBarcode = async ({ data }) => {
-    if (lockRef.current) return;
-    lockRef.current = true;
-    setScanned(true);
-    setChecking(true);
+    if (state !== 'idle') return; // extra guard, camera should already be unmounted
+    setState('processing');
     try {
       const res = await api.post('/attendance/check-in', { qrPayload: data });
-      Alert.alert('Checked in! ✅', `${res.data.message}\nSessions left: ${res.data.sessionsLeft}`);
+      setResult({
+        success: true,
+        title: 'Checked in! ✅',
+        message: `${res.data.message}\nSessions left: ${res.data.sessionsLeft}`,
+      });
     } catch (err) {
-      Alert.alert('Check-in failed', err.response?.data?.error || 'Please try scanning again.');
+      setResult({
+        success: false,
+        title: 'Check-in failed',
+        message: err.response?.data?.error || 'Please try scanning again.',
+      });
     } finally {
-      setChecking(false);
-      setTimeout(() => {
-        lockRef.current = false;
-        setScanned(false);
-      }, 2500);
+      setState('result');
     }
+  };
+
+  const scanAgain = () => {
+    setResult(null);
+    setState('idle');
   };
 
   if (!permission) return <View style={{ flex: 1 }} />;
@@ -70,14 +80,35 @@ function ScanTab() {
   return (
     <View style={{ flex: 1, padding: 20 }}>
       <View style={styles.cameraWrap}>
-        <CameraView
-          style={{ flex: 1 }}
-          barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-          onBarcodeScanned={scanned ? undefined : handleBarcode}
-        />
-        <View style={styles.frame} pointerEvents="none" />
+        {state === 'idle' ? (
+          <>
+            <CameraView
+              style={{ flex: 1 }}
+              barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+              onBarcodeScanned={handleBarcode}
+            />
+            <View style={styles.frame} pointerEvents="none" />
+          </>
+        ) : (
+          <View style={styles.resultBox}>
+            {state === 'processing' ? (
+              <>
+                <ActivityIndicator color={colors.red} size="large" />
+                <Text style={styles.resultText}>Checking you in…</Text>
+              </>
+            ) : (
+              <>
+                <Text style={[styles.resultTitle, { color: result.success ? colors.success : colors.danger }]}>
+                  {result.title}
+                </Text>
+                <Text style={styles.resultText}>{result.message}</Text>
+                <PrimaryButton title="Scan Again" onPress={scanAgain} style={{ marginTop: 20, width: '80%' }} />
+              </>
+            )}
+          </View>
+        )}
       </View>
-      <Text style={styles.hint}>{checking ? 'Checking you in…' : 'Point your camera at the front-desk screen'}</Text>
+      {state === 'idle' && <Text style={styles.hint}>Point your camera at the front-desk screen</Text>}
     </View>
   );
 }
@@ -132,6 +163,9 @@ const styles = StyleSheet.create({
     position: 'absolute', top: '25%', left: '15%', right: '15%', bottom: '35%',
     borderWidth: 3, borderColor: colors.red, borderRadius: 20,
   },
+  resultBox: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface, padding: 24 },
+  resultTitle: { fontSize: 20, fontWeight: '800', marginTop: 16, textAlign: 'center' },
+  resultText: { color: colors.gray, fontSize: 14, marginTop: 12, textAlign: 'center', lineHeight: 20 },
   hint: { color: colors.gray, textAlign: 'center', marginTop: 16, fontSize: 13 },
   centerBox: { flex: 1, justifyContent: 'center', padding: 20 },
   permText: { color: colors.white, fontSize: 14, lineHeight: 20 },

@@ -8,6 +8,8 @@ import HomeScreen from '../screens/HomeScreen';
 import PackagesScreen from '../screens/PackagesScreen';
 import PackageDetailScreen from '../screens/PackageDetailScreen';
 import AttendanceScreen from '../screens/AttendanceScreen';
+import ClassesScreen from '../screens/ClassesScreen';
+import MyBookingsScreen from '../screens/MyBookingsScreen';
 import NewsScreen from '../screens/NewsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import SubscriptionHistoryScreen from '../screens/SubscriptionHistoryScreen';
@@ -18,6 +20,7 @@ import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const PackagesStack = createNativeStackNavigator();
+const ClassesStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
 
 const stackOptions = { headerShown: false, contentStyle: { backgroundColor: colors.black } };
@@ -29,6 +32,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Packages" component={PackagesScreen} />
       <HomeStack.Screen name="PackageDetail" component={PackageDetailScreen} />
       <HomeStack.Screen name="Attendance" component={AttendanceScreen} />
+      <HomeStack.Screen name="Classes" component={ClassesScreen} />
       <HomeStack.Screen name="News" component={NewsScreen} />
     </HomeStack.Navigator>
   );
@@ -43,12 +47,22 @@ function PackagesStackScreen() {
   );
 }
 
+function ClassesStackScreen() {
+  return (
+    <ClassesStack.Navigator screenOptions={stackOptions}>
+      <ClassesStack.Screen name="ClassesList" component={ClassesScreen} />
+      <ClassesStack.Screen name="MyBookings" component={MyBookingsScreen} />
+    </ClassesStack.Navigator>
+  );
+}
+
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator screenOptions={stackOptions}>
       <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
       <ProfileStack.Screen name="SubscriptionHistory" component={SubscriptionHistoryScreen} />
       <ProfileStack.Screen name="MyRequests" component={MyRequestsScreen} />
+      <ProfileStack.Screen name="MyBookings" component={MyBookingsScreen} />
       <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
       <ProfileStack.Screen name="ChangePassword" component={ChangePasswordScreen} />
     </ProfileStack.Navigator>
@@ -76,8 +90,9 @@ export default function MainTabs() {
       }}
     >
       <Tab.Screen name="Home" component={HomeStackScreen} options={{ tabBarIcon: (p) => <TabIcon symbol="🏠" {...p} /> }} />
-      <Tab.Screen name="PackagesTab" component={PackagesStackScreen} options={{ title: 'Packages', tabBarIcon: (p) => <TabIcon symbol="📦" {...p} /> }} />
+      <Tab.Screen name="ClassesTab" component={ClassesStackScreen} options={{ title: 'Classes', tabBarIcon: (p) => <TabIcon symbol="🗓️" {...p} /> }} />
       <Tab.Screen name="AttendanceTab" component={AttendanceScreen} options={{ title: 'Attend', tabBarIcon: (p) => <TabIcon symbol="📷" {...p} /> }} />
+      <Tab.Screen name="PackagesTab" component={PackagesStackScreen} options={{ title: 'Packages', tabBarIcon: (p) => <TabIcon symbol="📦" {...p} /> }} />
       <Tab.Screen name="NewsTab" component={NewsScreen} options={{ title: 'Updates', tabBarIcon: (p) => <TabIcon symbol="🔔" {...p} /> }} />
       <Tab.Screen name="ProfileTab" component={ProfileStackScreen} options={{ title: 'Profile', tabBarIcon: (p) => <TabIcon symbol="👤" {...p} /> }} />
     </Tab.Navigator>

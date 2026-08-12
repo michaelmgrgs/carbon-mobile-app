@@ -36,6 +36,7 @@ export default function ProfileScreen({ navigation }) {
         <Card style={{ marginBottom: 20 }}>
           <MenuRow label="Subscription history" onPress={() => navigation.navigate('SubscriptionHistory')} />
           <MenuRow label="My package requests" onPress={() => navigation.navigate('MyRequests')} />
+          <MenuRow label="My class bookings" onPress={() => navigation.navigate('MyBookings')} />
           <MenuRow label="Edit profile" onPress={() => navigation.navigate('EditProfile')} />
           <MenuRow label="Change password" onPress={() => navigation.navigate('ChangePassword')} last />
         </Card>

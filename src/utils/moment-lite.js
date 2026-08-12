@@ -2,14 +2,14 @@
 // just for display formatting in the mobile app.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export default function formatDate(dateInput) {
+function formatDate(dateInput) {
   if (!dateInput) return '';
   const d = new Date(dateInput);
   if (isNaN(d.getTime())) return '';
   return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-export function formatDateTime(dateInput) {
+function formatDateTime(dateInput) {
   if (!dateInput) return '';
   const d = new Date(dateInput);
   if (isNaN(d.getTime())) return '';
@@ -19,3 +19,8 @@ export function formatDateTime(dateInput) {
   const hour12 = hours % 12 === 0 ? 12 : hours % 12;
   return `${d.getDate()} ${MONTHS[d.getMonth()]}, ${hour12}:${minutes} ${ampm}`;
 }
+
+// Exported both ways so it works whether a screen does
+// `import formatDate from '...'` or `import { formatDate } from '...'`
+export default formatDate;
+export { formatDate, formatDateTime };

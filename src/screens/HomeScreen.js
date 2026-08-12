@@ -51,8 +51,8 @@ export default function HomeScreen({ navigation }) {
 
         {/* Quick actions */}
         <View style={styles.quickRow}>
-          <QuickAction label="Scan & Check In" icon="qr" onPress={() => navigation.navigate('Attendance')} />
-          <QuickAction label="Browse Packages" icon="cart" onPress={() => navigation.navigate('Packages')} />
+          <QuickAction label="Book a Class" onPress={() => navigation.navigate('Classes')} />
+          <QuickAction label="Scan & Check In" onPress={() => navigation.navigate('Attendance')} />
         </View>
 
         {/* Active packages */}
