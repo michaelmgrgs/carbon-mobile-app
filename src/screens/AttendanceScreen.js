@@ -4,7 +4,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../services/api';
 import { Screen, Card, PrimaryButton } from '../components/UI';
-import { colors } from '../theme/theme';
+import { colors, typography } from '../theme/theme';
 import { formatDateTime } from '../utils/moment-lite';
 
 export default function AttendanceScreen() {
@@ -152,7 +152,7 @@ function HistoryTab() {
 }
 
 const styles = StyleSheet.create({
-  title: { color: colors.white, fontSize: 26, fontWeight: '800', marginBottom: 16 },
+  title: { color: colors.white, fontSize: 26, fontFamily: typography.fontFamily.display, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 16 },
   tabRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
   tab: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: colors.border },
   tabActive: { backgroundColor: colors.red, borderColor: colors.red },

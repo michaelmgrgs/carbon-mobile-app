@@ -29,6 +29,7 @@ export const typography = {
     semibold: 'Inter_600SemiBold',
     bold: 'Inter_700Bold',
     black: 'Inter_900Black',
+    display: 'Anton_400Regular', // bold condensed all-caps headline font
   },
   h1: { fontSize: 32, letterSpacing: -0.5 },
   h2: { fontSize: 24, letterSpacing: -0.3 },
@@ -36,6 +37,7 @@ export const typography = {
   body: { fontSize: 15 },
   small: { fontSize: 13 },
   tiny: { fontSize: 11, letterSpacing: 0.5 },
+  display: { fontFamily: 'Anton_400Regular', letterSpacing: 0.5 }, // use on big titles/headlines
 };
 
 export const radius = {

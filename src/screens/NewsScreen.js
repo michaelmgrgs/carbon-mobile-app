@@ -3,7 +3,7 @@ import { Text, StyleSheet, FlatList, Image, View, RefreshControl } from 'react-n
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../services/api';
 import { Screen, Card, Badge } from '../components/UI';
-import { colors } from '../theme/theme';
+import { colors, typography } from '../theme/theme';
 import { formatDate } from '../utils/moment-lite';
 
 export default function NewsScreen() {
@@ -46,7 +46,7 @@ export default function NewsScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: { color: colors.white, fontSize: 26, fontWeight: '800', marginBottom: 20 },
+  title: { color: colors.white, fontSize: 26, fontFamily: typography.fontFamily.display, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 20 },
   image: { width: '100%', height: 160, borderRadius: 12, marginBottom: 12 },
   date: { color: colors.gray, fontSize: 12 },
   newsTitle: { color: colors.white, fontSize: 16, fontWeight: '700', marginBottom: 6 },

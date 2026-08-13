@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, ScrollView } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { Screen, Card } from '../components/UI';
-import { colors } from '../theme/theme';
+import { colors, typography } from '../theme/theme';
 
 export default function ProfileScreen({ navigation }) {
   const { user, logout } = useAuth();
@@ -72,7 +72,7 @@ function MenuRow({ label, onPress, last }) {
 }
 
 const styles = StyleSheet.create({
-  title: { color: colors.white, fontSize: 26, fontWeight: '800', marginBottom: 20 },
+  title: { color: colors.white, fontSize: 26, fontFamily: typography.fontFamily.display, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 20 },
   avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   avatar: {
     width: 56, height: 56, borderRadius: 28, backgroundColor: colors.red,

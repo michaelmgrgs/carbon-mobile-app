@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../services/api';
 import { Screen, Card, Badge } from '../components/UI';
-import { colors } from '../theme/theme';
+import { colors, typography } from '../theme/theme';
 import { formatDate } from '../utils/moment-lite';
 
 const STATUS_TONE = { booked: 'success', cancelled: 'gray', attended: 'success', no_show: 'red' };
@@ -105,7 +105,7 @@ export default function MyBookingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: { color: colors.white, fontSize: 26, fontWeight: '800', marginBottom: 16 },
+  title: { color: colors.white, fontSize: 26, fontFamily: typography.fontFamily.display, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 16 },
   tabRow: { flexDirection: 'row', gap: 10, marginBottom: 8 },
   tab: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 999, borderWidth: 1, borderColor: colors.border },
   tabActive: { backgroundColor: colors.red, borderColor: colors.red },

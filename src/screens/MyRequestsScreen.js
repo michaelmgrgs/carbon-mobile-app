@@ -3,7 +3,7 @@ import { Text, StyleSheet, FlatList, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../services/api';
 import { Screen, Card, Badge } from '../components/UI';
-import { colors } from '../theme/theme';
+import { colors, typography } from '../theme/theme';
 import { formatDate } from '../utils/moment-lite';
 
 const STATUS_TONE = { pending: 'gray', approved: 'success', declined: 'red' };
@@ -54,7 +54,7 @@ export default function MyRequestsScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: { color: colors.white, fontSize: 24, fontWeight: '800', marginBottom: 6 },
+  title: { color: colors.white, fontSize: 24, fontFamily: typography.fontFamily.display, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
   subtitle: { color: colors.gray, fontSize: 13, marginBottom: 20, lineHeight: 18 },
   name: { color: colors.white, fontSize: 16, fontWeight: '700' },
   meta: { color: colors.gray, fontSize: 13, marginTop: 4 },

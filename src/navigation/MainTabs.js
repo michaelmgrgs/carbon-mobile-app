@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/theme';
 
 import HomeScreen from '../screens/HomeScreen';
@@ -34,6 +35,9 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Attendance" component={AttendanceScreen} />
       <HomeStack.Screen name="Classes" component={ClassesScreen} />
       <HomeStack.Screen name="News" component={NewsScreen} />
+      <HomeStack.Screen name="MyBookings" component={MyBookingsScreen} />
+      <HomeStack.Screen name="MyRequests" component={MyRequestsScreen} />
+      <HomeStack.Screen name="SubscriptionHistory" component={SubscriptionHistoryScreen} />
     </HomeStack.Navigator>
   );
 }
@@ -69,32 +73,97 @@ function ProfileStackScreen() {
   );
 }
 
-function TabIcon({ symbol, focused }) {
+const ICON_FOR = {
+  Home: 'home',
+  PackagesTab: 'cart',
+  ClassesTab: 'calendar',
+  ProfileTab: 'person',
+};
+const LABEL_FOR = {
+  Home: 'Home',
+  PackagesTab: 'Buy Now',
+  ClassesTab: 'Schedule',
+  ProfileTab: 'Profile',
+};
+
+// Real tab order in the navigator: Home, PackagesTab(Buy Now), ClassesTab(Schedule), ProfileTab.
+// The circular logo is rendered as a purely visual 5th item, inserted between
+// index 1 and 2, and just navigates to Home when tapped — it isn't a real route.
+// Scan & Check In (attendance/QR) intentionally has no standalone bottom tab —
+// it's reached from Home's quick-action card instead, same as Book a Class.
+function CustomTabBar({ state, navigation }) {
+  const routes = state.routes;
+
+  const renderTab = (route, index) => {
+    const isFocused = state.index === index;
+    const onPress = () => {
+      const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+      if (!isFocused && !event.defaultPrevented) navigation.navigate(route.name);
+    };
+    return (
+      <TouchableOpacity key={route.key} activeOpacity={0.7} onPress={onPress} style={styles.tabItem}>
+        <Ionicons
+          name={isFocused ? ICON_FOR[route.name] : `${ICON_FOR[route.name]}-outline`}
+          size={26}
+          color={isFocused ? colors.white : colors.gray}
+        />
+        <Text style={[styles.tabLabel, { color: isFocused ? colors.white : colors.gray }]}>{LABEL_FOR[route.name]}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.5 }}>{symbol}</Text>
-      <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: focused ? colors.red : 'transparent', marginTop: 3 }} />
+    <View style={styles.barWrap}>
+      <View style={styles.bar}>
+        {renderTab(routes[0], 0)}
+        {renderTab(routes[1], 1)}
+        <View style={styles.centerSlot}>
+          <TouchableOpacity activeOpacity={0.85} onPress={() => navigation.navigate('Home')} style={styles.centerBtn}>
+            <Image source={require('../../assets/logo-badge.png')} style={styles.centerLogo} resizeMode="contain" />
+          </TouchableOpacity>
+        </View>
+        {renderTab(routes[2], 2)}
+        {renderTab(routes[3], 3)}
+      </View>
     </View>
   );
 }
 
 export default function MainTabs() {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border, height: 84, paddingTop: 8 },
-        tabBarActiveTintColor: colors.white,
-        tabBarInactiveTintColor: colors.gray,
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
-      }}
-    >
-      <Tab.Screen name="Home" component={HomeStackScreen} options={{ tabBarIcon: (p) => <TabIcon symbol="🏠" {...p} /> }} />
-      <Tab.Screen name="ClassesTab" component={ClassesStackScreen} options={{ title: 'Classes', tabBarIcon: (p) => <TabIcon symbol="🗓️" {...p} /> }} />
-      <Tab.Screen name="AttendanceTab" component={AttendanceScreen} options={{ title: 'Attend', tabBarIcon: (p) => <TabIcon symbol="📷" {...p} /> }} />
-      <Tab.Screen name="PackagesTab" component={PackagesStackScreen} options={{ title: 'Packages', tabBarIcon: (p) => <TabIcon symbol="📦" {...p} /> }} />
-      <Tab.Screen name="NewsTab" component={NewsScreen} options={{ title: 'Updates', tabBarIcon: (p) => <TabIcon symbol="🔔" {...p} /> }} />
-      <Tab.Screen name="ProfileTab" component={ProfileStackScreen} options={{ title: 'Profile', tabBarIcon: (p) => <TabIcon symbol="👤" {...p} /> }} />
+    <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={(props) => <CustomTabBar {...props} />}>
+      <Tab.Screen name="Home" component={HomeStackScreen} />
+      <Tab.Screen name="PackagesTab" component={PackagesStackScreen} />
+      <Tab.Screen name="ClassesTab" component={ClassesStackScreen} />
+      <Tab.Screen name="ProfileTab" component={ProfileStackScreen} />
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  barWrap: { position: 'absolute', left: 0, right: 0, bottom: 0 },
+  bar: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    height: Platform.OS === 'ios' ? 92 : 74,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 10,
+    paddingTop: 8,
+    alignItems: 'flex-start',
+  },
+  tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 4 },
+  tabLabel: { fontSize: 11, fontWeight: '600' },
+  centerSlot: { flex: 1, alignItems: 'center', justifyContent: 'flex-start' },
+  centerBtn: {
+    width: 62, height: 62, borderRadius: 31,
+    alignItems: 'center', justifyContent: 'center',
+    marginTop: -30,
+    borderWidth: 4, borderColor: colors.black,
+    shadowColor: colors.red, shadowOpacity: 0.5, shadowRadius: 10, shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
+    overflow: 'hidden',
+    backgroundColor: colors.red,
+  },
+  centerLogo: { width: '100%', height: '100%' },
+});

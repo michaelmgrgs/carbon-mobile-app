@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, StyleSheet, FlatList, View, ActivityIndicator } from 'react-native';
 import api from '../services/api';
 import { Screen, Card, Badge } from '../components/UI';
-import { colors } from '../theme/theme';
+import { colors, typography } from '../theme/theme';
 import { formatDate } from '../utils/moment-lite';
 
 export default function SubscriptionHistoryScreen() {
@@ -45,7 +45,7 @@ export default function SubscriptionHistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: { color: colors.white, fontSize: 24, fontWeight: '800', marginBottom: 20 },
+  title: { color: colors.white, fontSize: 24, fontFamily: typography.fontFamily.display, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 20 },
   name: { color: colors.white, fontSize: 16, fontWeight: '700' },
   meta: { color: colors.gray, fontSize: 13, marginTop: 4 },
 });
