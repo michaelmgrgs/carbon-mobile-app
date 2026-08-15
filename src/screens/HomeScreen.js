@@ -58,8 +58,8 @@ export default function HomeScreen({ navigation }) {
         refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={colors.red} />}
       >
         {/* Hero */}
-        <ImageBackground source={heroImage} style={styles.hero} imageStyle={{ opacity: 0.6 }}>
-          <LinearGradient colors={['rgba(20,21,20,0.15)', 'rgba(20,21,20,0.75)', colors.black]} locations={[0, 0.55, 1]} style={styles.heroFade}>
+        <ImageBackground source={heroImage} style={styles.hero} imageStyle={{ opacity: 1 }}>
+        <LinearGradient colors={['rgba(20,21,20,0.1)', 'rgba(20,21,20,0.6)', colors.black]} locations={[0, 0.55, 1]} style={styles.heroFade}>
             <View style={styles.heroContent}>
               <Text style={styles.greeting}>Hey {user?.firstName} 👋</Text>
               <Text style={styles.sub}>Ready to train today?</Text>

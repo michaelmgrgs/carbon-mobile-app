@@ -77,7 +77,7 @@ export default function MyBookingsScreen() {
                 <Text style={styles.meta}>
                   {formatDate(item.class_date)} · {item.start_time?.slice(0, 5)} · {item.branch_name}
                 </Text>
-                <Text style={styles.meta}>Coach {item.coach_first_name} {item.coach_last_name}</Text>
+                <Text style={styles.meta}>Coach{item.coach_name?.includes(',') ? 'es' : ''} {item.coach_name}</Text>
               </View>
               <Badge text={STATUS_LABEL[item.status] || item.status} tone={STATUS_TONE[item.status] || 'gray'} />
             </View>

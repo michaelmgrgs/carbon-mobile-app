@@ -118,7 +118,12 @@ function CustomTabBar({ state, navigation }) {
         {renderTab(routes[0], 0)}
         {renderTab(routes[1], 1)}
         <View style={styles.centerSlot}>
-          <TouchableOpacity activeOpacity={0.85} onPress={() => navigation.navigate('Home')} style={styles.centerBtn}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Home', { screen: 'HomeTab' })}
+            style={styles.centerBtn}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Image source={require('../../assets/logo-badge.png')} style={styles.centerLogo} resizeMode="contain" />
           </TouchableOpacity>
         </View>
@@ -141,7 +146,7 @@ export default function MainTabs() {
 }
 
 const styles = StyleSheet.create({
-  barWrap: { position: 'absolute', left: 0, right: 0, bottom: 0 },
+  barWrap: {},
   bar: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
@@ -154,14 +159,14 @@ const styles = StyleSheet.create({
   },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 4 },
   tabLabel: { fontSize: 11, fontWeight: '600' },
-  centerSlot: { flex: 1, alignItems: 'center', justifyContent: 'flex-start' },
+  centerSlot: { flex: 1, alignItems: 'center', justifyContent: 'flex-start', zIndex: 10 },
   centerBtn: {
-    width: 62, height: 62, borderRadius: 31,
+    width: 74, height: 74, borderRadius: 37,
     alignItems: 'center', justifyContent: 'center',
-    marginTop: -30,
+    marginTop: -36,
     borderWidth: 4, borderColor: colors.black,
     shadowColor: colors.red, shadowOpacity: 0.5, shadowRadius: 10, shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
+    elevation: 10,
     overflow: 'hidden',
     backgroundColor: colors.red,
   },

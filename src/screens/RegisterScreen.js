@@ -41,8 +41,8 @@ export default function RegisterScreen({ navigation }) {
             <Input label="First name" value={form.firstName} onChangeText={update('firstName')} />
             <Input label="Last name" value={form.lastName} onChangeText={update('lastName')} />
             <Input label="Phone number" value={form.phoneNumber} onChangeText={update('phoneNumber')} keyboardType="phone-pad" />
-            <Input label="Email" value={form.email} onChangeText={update('email')} autoCapitalize="none" keyboardType="email-address" />
-            <Input label="Password" value={form.password} onChangeText={update('password')} secureTextEntry />
+            <Input label="Email" value={form.email} onChangeText={update('email')} autoCapitalize="none" keyboardType="email-address" textContentType="username" autoComplete="email" />
+            <Input label="Password" value={form.password} onChangeText={update('password')} secureTextEntry textContentType="newPassword" autoComplete="password-new" />
 
             <Text style={styles.label}>Gender</Text>
             <View style={styles.genderRow}>
