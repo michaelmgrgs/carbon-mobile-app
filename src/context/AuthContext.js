@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import * as SecureStore from 'expo-secure-store';
 import api, { setAccessToken } from '../services/api';
 import { registerForPushNotificationsAsync } from '../services/notifications';
-import { isBiometricEnabled, promptBiometricAuth } from '../services/biometrics';
+import { isBiometricEnabled, promptBiometricAuth, setBiometricEnabled } from '../services/biometrics';
 
 const AuthContext = createContext(null);
 
@@ -106,6 +106,16 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  // Permanently deletes the member's account on the server, then clears the local session.
+  const deleteAccount = async (password) => {
+    await api.delete('/profile', { data: { password } });
+    setAccessToken(null);
+    await SecureStore.deleteItemAsync('carbon_refresh_token');
+    await SecureStore.deleteItemAsync('carbon_user');
+    await setBiometricEnabled(false);
+    setUser(null);
+  };
+
   const refreshUser = async (patch) => setUser((prev) => ({ ...prev, ...patch }));
 
   return (
@@ -119,6 +129,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
+        deleteAccount,
         refreshUser,
       }}
     >

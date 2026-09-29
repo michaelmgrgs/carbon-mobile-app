@@ -17,6 +17,7 @@ import SubscriptionHistoryScreen from '../screens/SubscriptionHistoryScreen';
 import MyRequestsScreen from '../screens/MyRequestsScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import DeleteAccountScreen from '../screens/DeleteAccountScreen';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -69,6 +70,7 @@ function ProfileStackScreen() {
       <ProfileStack.Screen name="MyBookings" component={MyBookingsScreen} />
       <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} />
       <ProfileStack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+      <ProfileStack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
     </ProfileStack.Navigator>
   );
 }

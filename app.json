@@ -4,7 +4,7 @@
     "slug": "carbon-gym",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#141514",
     "splash": {
@@ -12,21 +12,29 @@
       "resizeMode": "contain",
       "backgroundColor": "#141514"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.carbon.gym",
       "infoPlist": {
-        "NSCameraUsageDescription": "Carbon needs your camera to scan the check-in QR code at the front desk."
+        "NSCameraUsageDescription": "Carbon needs your camera to scan the check-in QR code at the front desk.",
+        "NSFaceIDUsageDescription": "Carbon uses Face ID so you can log in quickly and securely.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "com.carbon.gym",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#141514"
       },
-      "permissions": ["CAMERA", "NOTIFICATIONS"]
+      "permissions": [
+        "CAMERA",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ]
     },
     "plugins": [
       [
@@ -38,13 +46,22 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/logo.png",
+          "icon": "./assets/notification-icon.png",
           "color": "#D6362F"
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Carbon uses Face ID so you can log in quickly and securely."
         }
       ]
     ],
     "extra": {
       "apiBaseUrl": "https://carbon-app-i2s42.ondigitalocean.app/api/mobile"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

@@ -95,6 +95,10 @@ export default function ProfileScreen({ navigation }) {
         <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('DeleteAccount')} style={styles.deleteBtn}>
+          <Text style={styles.deleteText}>Delete account</Text>
+        </TouchableOpacity>
       </ScrollView>
     </Screen>
   );
@@ -129,4 +133,6 @@ const styles = StyleSheet.create({
   toggleLabel: { color: colors.white, fontSize: 15 },
   logoutBtn: { alignItems: 'center', paddingVertical: 16, marginTop: 8 },
   logoutText: { color: colors.danger, fontWeight: '700', fontSize: 15 },
+  deleteBtn: { alignItems: 'center', paddingVertical: 10 },
+  deleteText: { color: colors.gray, fontSize: 13, textDecorationLine: 'underline' },
 });
