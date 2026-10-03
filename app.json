@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Carbon",
-    "slug": "carbon-gym",
+    "slug": "carbon-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -33,7 +33,14 @@
       "permissions": [
         "CAMERA",
         "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
+        "USE_FINGERPRINT",
+        "CAMERA",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
       ]
     },
     "plugins": [
@@ -58,10 +65,17 @@
       ]
     ],
     "extra": {
-      "apiBaseUrl": "https://carbon-app-i2s42.ondigitalocean.app/api/mobile"
+      "apiBaseUrl": "https://carbon-app-i2s42.ondigitalocean.app/api/mobile",
+      "eas": {
+        "projectId": "a5f5d0d1-cff8-4878-b78d-96916700d0b4"
+      }
     },
     "runtimeVersion": {
       "policy": "appVersion"
+    },
+    "owner": "carbon-egypt",
+    "updates": {
+      "url": "https://u.expo.dev/a5f5d0d1-cff8-4878-b78d-96916700d0b4"
     }
   }
 }
