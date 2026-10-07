@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, Image } from 'react-native';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, useNavigationContainerRef } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_900Black } from '@expo-google-fonts/inter';
@@ -12,6 +13,7 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 import MainTabs from './src/navigation/MainTabs';
+import { navigateForNotification } from './src/services/notifications';
 import { colors } from './src/theme/theme';
 
 const Stack = createNativeStackNavigator();
@@ -49,7 +51,24 @@ function RootNavigator() {
   );
 }
 
+// Opens the right screen when a notification is tapped — including when the tap
+// launched the app, in which case we wait until the member is logged in.
+function NotificationRouter({ navigationRef, navReady }) {
+  const { user } = useAuth();
+  const response = Notifications.useLastNotificationResponse();
+
+  useEffect(() => {
+    if (!response || !user || !navReady) return;
+    navigateForNotification(navigationRef, response.notification.request.content.data);
+    Notifications.clearLastNotificationResponseAsync();
+  }, [response, user, navReady, navigationRef]);
+
+  return null;
+}
+
 export default function App() {
+  const navigationRef = useNavigationContainerRef();
+  const [navReady, setNavReady] = useState(false);
   const [fontsLoaded] = useFonts({ Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_900Black, Anton_400Regular });
 
   if (!fontsLoaded) {
@@ -58,9 +77,10 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <NavigationContainer theme={navTheme}>
+      <NavigationContainer ref={navigationRef} theme={navTheme} onReady={() => setNavReady(true)}>
         <StatusBar style="light" />
         <RootNavigator />
+        <NotificationRouter navigationRef={navigationRef} navReady={navReady} />
       </NavigationContainer>
     </AuthProvider>
   );

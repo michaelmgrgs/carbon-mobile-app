@@ -17,6 +17,7 @@ import SubscriptionHistoryScreen from '../screens/SubscriptionHistoryScreen';
 import MyRequestsScreen from '../screens/MyRequestsScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import NewsDetailScreen from '../screens/NewsDetailScreen';
 import DeleteAccountScreen from '../screens/DeleteAccountScreen';
 
 const Tab = createBottomTabNavigator();
@@ -36,6 +37,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Attendance" component={AttendanceScreen} />
       <HomeStack.Screen name="Classes" component={ClassesScreen} />
       <HomeStack.Screen name="News" component={NewsScreen} />
+      <HomeStack.Screen name="NewsDetail" component={NewsDetailScreen} />
       <HomeStack.Screen name="MyBookings" component={MyBookingsScreen} />
       <HomeStack.Screen name="MyRequests" component={MyRequestsScreen} />
       <HomeStack.Screen name="SubscriptionHistory" component={SubscriptionHistoryScreen} />

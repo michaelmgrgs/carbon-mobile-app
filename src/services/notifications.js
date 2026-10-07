@@ -5,7 +5,8 @@ import api from './api';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
@@ -45,4 +46,16 @@ export async function registerForPushNotificationsAsync() {
   }
 
   return expoPushToken;
+}
+
+/**
+ * Where to go when a member taps a notification. The server puts { type, ... } in
+ * the notification's data; anything unknown just opens the app on Home.
+ */
+export function navigateForNotification(navigation, data = {}) {
+  if (data.type === 'news' && data.newsId) {
+    navigation.navigate('Main', { screen: 'Home', params: { screen: 'NewsDetail', params: { newsId: data.newsId } } });
+  } else if (data.type === 'package_request') {
+    navigation.navigate('Main', { screen: 'Home', params: { screen: 'MyRequests' } });
+  }
 }

@@ -177,10 +177,12 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           {news.map((n) => (
-            <Card key={n.id} style={{ marginBottom: 12 }}>
-              <Text style={styles.newsTitle}>{n.title}</Text>
-              <Text style={styles.newsBody} numberOfLines={2}>{n.body}</Text>
-            </Card>
+            <TouchableOpacity key={n.id} activeOpacity={0.8} onPress={() => navigation.navigate('NewsDetail', { item: n })}>
+              <Card style={{ marginBottom: 12 }}>
+                <Text style={styles.newsTitle}>{n.title}</Text>
+                <Text style={styles.newsBody} numberOfLines={2}>{n.body}</Text>
+              </Card>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
