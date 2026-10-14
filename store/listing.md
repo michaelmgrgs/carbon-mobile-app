@@ -57,7 +57,7 @@ https://carbon-app-i2s42.ondigitalocean.app/privacy
 **Copyright**
 2026 Carbon Gym
 
-**What's New in This Version** [4000] — version 1.0.0
+**What's New in This Version** [4000] — version 1.0.1
 ```
 Welcome to the Carbon app! Book classes, check in with a QR scan, and track your membership.
 ```

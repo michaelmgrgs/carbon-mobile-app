@@ -1,16 +1,44 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Image, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert, ImageBackground, TouchableOpacity, ActivityIndicator, AccessibilityInfo } from 'react-native';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { Input, PrimaryButton, GhostButton } from '../components/UI';
 import { colors } from '../theme/theme';
 
-// Reuses the same hero photo as Home — swap assets/hero.jpg for a real gym
-// photo any time and both screens pick it up automatically. If you'd rather
-// use a different photo just for Login, add e.g. assets/login-bg.jpg and
-// change the require() below.
+// The photo shows instantly and stays as the fallback; the looping clip fades in
+// on top once its first frame is ready. Replacing assets/login.mp4 needs a new
+// store build (keep it short, portrait, silent, ~2 MB).
 const backgroundImage = require('../../assets/loginScreen.jpg');
+const backgroundVideo = require('../../assets/login.mp4');
+
+function BackgroundVideo() {
+  const [visible, setVisible] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const player = useVideoPlayer(backgroundVideo, (p) => {
+    p.loop = true;
+    p.muted = true;
+    p.audioMixingMode = 'mixWithOthers'; // don't stop the member's music
+    p.play();
+  });
+
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion).catch(() => {});
+  }, []);
+
+  if (reduceMotion) return null;
+  return (
+    <VideoView
+      player={player}
+      style={[StyleSheet.absoluteFill, { opacity: visible ? 1 : 0 }]}
+      contentFit="cover"
+      nativeControls={false}
+      allowsPictureInPicture={false}
+      onFirstFrameRender={() => setVisible(true)}
+    />
+  );
+}
 
 export default function LoginScreen({ navigation }) {
   const { login, needsBiometricUnlock, unlockWithBiometrics, cancelBiometricUnlock } = useAuth();
@@ -57,6 +85,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <ImageBackground source={backgroundImage} style={{ flex: 1 }} imageStyle={{ opacity: 1 }}>
+      <BackgroundVideo />
       <LinearGradient colors={['rgba(20,21,20,0.15)', 'rgba(20,21,20,0.75)', colors.black]} locations={[0, 0.55, 1]} style={{ flex: 1 }}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
           <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
