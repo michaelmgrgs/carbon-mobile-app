@@ -7,7 +7,7 @@ import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Screen, Card, Badge } from '../components/UI';
 import { colors, typography, radius } from '../theme/theme';
-import moment, { formatDateTime } from '../utils/moment-lite';
+import moment, { formatClassDateTime } from '../utils/moment-lite';
 
 // Placeholder image ships by default — replace assets/hero.jpg with a real
 // photo of your gym/athletes (about 1200x800px works well) any time; the
@@ -107,7 +107,7 @@ export default function HomeScreen({ navigation }) {
                   <View style={{ flex: 1 }}>
                     <Text style={styles.upNextClass}>{nextBooking.class_name.toUpperCase()}</Text>
                     <Text style={styles.upNextMeta}>
-                      {formatDateTime(nextBooking.class_date)} · {nextBooking.branch_name}
+                      {formatClassDateTime(nextBooking.class_date, nextBooking.start_time)} · {nextBooking.branch_name}
                     </Text>
                   </View>
                   <Ionicons name="barbell-outline" size={22} color={colors.red} />
