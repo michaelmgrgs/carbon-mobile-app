@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useFocusEffect } from '@react-navigation/native';
@@ -37,9 +37,13 @@ function ScanTab() {
   const [permission, requestPermission] = useCameraPermissions();
   const [state, setState] = useState('idle');
   const [result, setResult] = useState(null); // { success, title, message }
+  // The camera reports the same code several times a second, and state only updates
+  // on the next render, so a state check let 3-4 scans through. A ref locks instantly.
+  const scanLocked = useRef(false);
 
   const handleBarcode = async ({ data }) => {
-    if (state !== 'idle') return; // extra guard, camera should already be unmounted
+    if (scanLocked.current) return;
+    scanLocked.current = true;
     setState('processing');
     try {
       const res = await api.post('/attendance/check-in', { qrPayload: data });
@@ -62,6 +66,7 @@ function ScanTab() {
   const scanAgain = () => {
     setResult(null);
     setState('idle');
+    scanLocked.current = false;
   };
 
   if (!permission) return <View style={{ flex: 1 }} />;
@@ -85,7 +90,7 @@ function ScanTab() {
             <CameraView
               style={{ flex: 1 }}
               barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-              onBarcodeScanned={handleBarcode}
+              onBarcodeScanned={state === 'idle' ? handleBarcode : undefined}
             />
             <View style={styles.frame} pointerEvents="none" />
           </>
