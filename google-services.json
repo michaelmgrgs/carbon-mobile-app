@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1027511128644",
+    "project_id": "carbon-95276",
+    "storage_bucket": "carbon-95276.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027511128644:android:847fc7d7df07def3422211",
+        "android_client_info": {
+          "package_name": "com.carbon.gym"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_n7iiY5hIWbpwWqu4LOIk-9uCzidQ5WA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
