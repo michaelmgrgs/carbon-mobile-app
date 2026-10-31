@@ -97,7 +97,7 @@ export default function ClassesScreen() {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.dayStrip}
-        style={{ flexGrow: 0 }}
+        style={styles.dayStripWrap}
       >
         {days.map((d) => {
           const selected = d.key === selectedDate;
@@ -181,16 +181,18 @@ const styles = StyleSheet.create({
   tabActive: { backgroundColor: colors.red, borderColor: colors.red },
   tabText: { color: colors.gray, fontWeight: '600', fontSize: 13 },
   tabTextActive: { color: colors.white },
-  dayStrip: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8, gap: 8 },
+  // Fixed height + no shrinking: a long class list below used to squash the strip.
+  dayStripWrap: { flexGrow: 0, flexShrink: 0, height: 76 },
+  dayStrip: { paddingHorizontal: 20, paddingVertical: 6, gap: 6, alignItems: 'center' },
   dayPill: {
-    width: 56, paddingVertical: 10, borderRadius: 16, alignItems: 'center',
+    width: 44, height: 64, borderRadius: 12, alignItems: 'center', justifyContent: 'center',
     backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border,
   },
   dayPillActive: { backgroundColor: colors.red, borderColor: colors.red },
-  dayWeekday: { color: colors.gray, fontSize: 12, fontWeight: '600' },
-  dayNum: { color: colors.white, fontSize: 20, fontWeight: '800', marginTop: 2 },
+  dayWeekday: { color: colors.gray, fontSize: 10, fontWeight: '600' },
+  dayNum: { color: colors.white, fontSize: 16, fontWeight: '800', marginTop: 1 },
   dayTextActive: { color: colors.white },
-  dayDot: { width: 5, height: 5, borderRadius: 3, marginTop: 6, backgroundColor: 'transparent' },
+  dayDot: { width: 4, height: 4, borderRadius: 2, marginTop: 4, backgroundColor: 'transparent' },
   dayDotOn: { backgroundColor: colors.red },
   dayDotOnActive: { backgroundColor: colors.white },
   dayLabel: { color: colors.gray, fontSize: 13, fontWeight: '700', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5 },
