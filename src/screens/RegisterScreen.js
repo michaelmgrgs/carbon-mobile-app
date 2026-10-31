@@ -15,9 +15,11 @@ export default function RegisterScreen({ navigation }) {
   const update = (key) => (val) => setForm((f) => ({ ...f, [key]: val }));
 
   const handleRegister = async () => {
-    const { firstName, lastName, phoneNumber, email, password, gender, residentialArea } = form;
-    if (!firstName || !lastName || !phoneNumber || !email || !password || !gender || !residentialArea) {
-      Alert.alert('Missing info', 'Please fill in all fields, including gender and area.');
+    // Phone, gender and area are optional (App Store guideline 5.1.1(v)): only what
+    // the account needs to work is required.
+    const { firstName, lastName, email, password } = form;
+    if (!firstName || !lastName || !email || !password) {
+      Alert.alert('Missing info', 'Please enter your name, email and password.');
       return;
     }
     setLoading(true);
@@ -40,16 +42,17 @@ export default function RegisterScreen({ navigation }) {
           <View style={{ marginTop: 28, width: '100%' }}>
             <Input label="First name" value={form.firstName} onChangeText={update('firstName')} />
             <Input label="Last name" value={form.lastName} onChangeText={update('lastName')} />
-            <Input label="Phone number" value={form.phoneNumber} onChangeText={update('phoneNumber')} keyboardType="phone-pad" />
+            <Input label="Phone number (optional)" value={form.phoneNumber} onChangeText={update('phoneNumber')} keyboardType="phone-pad" />
             <Input label="Email" value={form.email} onChangeText={update('email')} autoCapitalize="none" keyboardType="email-address" textContentType="username" autoComplete="email" />
             <Input label="Password" value={form.password} onChangeText={update('password')} secureTextEntry textContentType="newPassword" autoComplete="password-new" />
 
-            <Text style={styles.label}>Gender</Text>
+            <Text style={styles.label}>Gender (optional)</Text>
+            <Text style={styles.hint}>Helps us plan classes and coaching.</Text>
             <View style={styles.genderRow}>
               {['Male', 'Female'].map((g) => (
                 <TouchableOpacity
                   key={g}
-                  onPress={() => update('gender')(g)}
+                  onPress={() => update('gender')(form.gender === g ? '' : g)}
                   style={[styles.genderOption, form.gender === g && styles.genderOptionActive]}
                 >
                   <Text style={[styles.genderText, form.gender === g && styles.genderTextActive]}>{g}</Text>
@@ -57,7 +60,7 @@ export default function RegisterScreen({ navigation }) {
               ))}
             </View>
 
-            <Input label="Residential area" value={form.residentialArea} onChangeText={update('residentialArea')} placeholder="e.g. Maadi" />
+            <Input label="Residential area (optional)" value={form.residentialArea} onChangeText={update('residentialArea')} placeholder="e.g. Maadi" />
 
             <PrimaryButton title="Sign Up" onPress={handleRegister} loading={loading} style={{ marginTop: 8 }} />
             <GhostButton title="Already have an account? Log in" onPress={() => navigation.goBack()} style={{ marginTop: 14 }} />
@@ -73,6 +76,7 @@ const styles = StyleSheet.create({
   title: { color: colors.white, fontSize: 26, fontWeight: '800' },
   subtitle: { color: colors.gray, fontSize: 14, marginTop: 6 },
   label: { color: colors.gray, fontSize: 13, marginBottom: 6, fontWeight: '600' },
+  hint: { color: colors.gray, fontSize: 12, marginTop: -2, marginBottom: 8 },
   genderRow: { flexDirection: 'row', gap: 10, marginBottom: 16 },
   genderOption: {
     flex: 1, paddingVertical: 14, alignItems: 'center', borderRadius: radius.md,

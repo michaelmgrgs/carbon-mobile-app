@@ -85,12 +85,12 @@ const ICON_FOR = {
 };
 const LABEL_FOR = {
   Home: 'Home',
-  PackagesTab: 'Buy Now',
+  PackagesTab: 'Packages',
   ClassesTab: 'Schedule',
   ProfileTab: 'Profile',
 };
 
-// Real tab order in the navigator: Home, PackagesTab(Buy Now), ClassesTab(Schedule), ProfileTab.
+// Real tab order in the navigator: Home, PackagesTab(Packages), ClassesTab(Schedule), ProfileTab.
 // The circular logo is rendered as a purely visual 5th item, inserted between
 // index 1 and 2, and just navigates to Home when tapped — it isn't a real route.
 // Scan & Check In (attendance/QR) intentionally has no standalone bottom tab —
