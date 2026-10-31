@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import api from '../services/api';
 import { Screen, Card, Badge } from '../components/UI';
-import SmartImage from '../components/SmartImage';
 import { colors, typography } from '../theme/theme';
 
 // CFC is hidden in the app for now; add it back here to show its tab again.
@@ -46,17 +45,15 @@ export default function PackagesScreen({ navigation }) {
           contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
           renderItem={({ item }) => (
             <TouchableOpacity activeOpacity={0.85} onPress={() => navigation.navigate('PackageDetail', { pkg: item })}>
-              <Card style={styles.pkgCard}>
-                <SmartImage uri={item.image_url} style={styles.pkgImage} />
-                <View style={styles.pkgBody}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={styles.pkgName}>{item.name}</Text>
-                    <Badge text={item.branch_name} tone="red" />
-                  </View>
-                  <Text style={styles.pkgMeta}>{item.session_count} sessions · {item.validity_period} days validity</Text>
-                  {item.description ? <Text style={styles.pkgDesc} numberOfLines={2}>{item.description}</Text> : null}
-                  <Text style={styles.pkgPrice}>{Number(item.price).toLocaleString()} EGP</Text>
+              {/* No photo or description here: packages of the same class would all repeat them.
+                  The class description shows on the package page. */}
+              <Card style={{ marginBottom: 14 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={styles.pkgName}>{item.name}</Text>
+                  <Badge text={item.branch_name} tone="red" />
                 </View>
+                <Text style={styles.pkgMeta}>{item.session_count} sessions · {item.validity_period} days validity</Text>
+                <Text style={styles.pkgPrice}>{Number(item.price).toLocaleString()} EGP</Text>
               </Card>
             </TouchableOpacity>
           )}
@@ -74,10 +71,6 @@ const styles = StyleSheet.create({
   tabActive: { backgroundColor: colors.red, borderColor: colors.red },
   tabText: { color: colors.gray, fontWeight: '600', fontSize: 13 },
   tabTextActive: { color: colors.white },
-  pkgCard: { marginBottom: 16, padding: 0, overflow: 'hidden' },
-  pkgImage: { width: '100%', height: 150 },
-  pkgBody: { padding: 16 },
-  pkgDesc: { color: colors.gray, fontSize: 13, lineHeight: 19, marginTop: 8 },
   pkgName: { color: colors.white, fontSize: 17, fontWeight: '700', flexShrink: 1, marginRight: 8 },
   pkgMeta: { color: colors.gray, fontSize: 13, marginTop: 8 },
   pkgPrice: { color: colors.red, fontSize: 20, fontWeight: '800', marginTop: 10 },
