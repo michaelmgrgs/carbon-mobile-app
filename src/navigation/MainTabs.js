@@ -24,6 +24,7 @@ const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const PackagesStack = createNativeStackNavigator();
 const ClassesStack = createNativeStackNavigator();
+const NewsStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
 
 const stackOptions = { headerShown: false, contentStyle: { backgroundColor: colors.black } };
@@ -42,6 +43,15 @@ function HomeStackScreen() {
       <HomeStack.Screen name="MyRequests" component={MyRequestsScreen} />
       <HomeStack.Screen name="SubscriptionHistory" component={SubscriptionHistoryScreen} />
     </HomeStack.Navigator>
+  );
+}
+
+function NewsStackScreen() {
+  return (
+    <NewsStack.Navigator screenOptions={stackOptions}>
+      <NewsStack.Screen name="NewsList" component={NewsScreen} />
+      <NewsStack.Screen name="NewsDetail" component={NewsDetailScreen} />
+    </NewsStack.Navigator>
   );
 }
 
@@ -78,27 +88,30 @@ function ProfileStackScreen() {
 }
 
 const ICON_FOR = {
-  Home: 'home',
+  NewsTab: 'newspaper',
   PackagesTab: 'cart',
   ClassesTab: 'calendar',
   ProfileTab: 'person',
 };
 const LABEL_FOR = {
-  Home: 'Home',
+  NewsTab: 'News',
   PackagesTab: 'Packages',
   ClassesTab: 'Schedule',
   ProfileTab: 'Profile',
 };
 
-// Real tab order in the navigator: Home, PackagesTab(Packages), ClassesTab(Schedule), ProfileTab.
-// The circular logo is rendered as a purely visual 5th item, inserted between
-// index 1 and 2, and just navigates to Home when tapped — it isn't a real route.
+// Bar layout: News, Packages, [Carbon logo], Schedule, Profile.
+// Home is a real route (the app opens on it) but has no tab of its own: the
+// center logo is the Home button, so a separate Home tab would be a duplicate.
 // Scan & Check In (attendance/QR) intentionally has no standalone bottom tab —
 // it's reached from Home's quick-action card instead, same as Book a Class.
 function CustomTabBar({ state, navigation }) {
   const routes = state.routes;
+  const homeFocused = routes[state.index].name === 'Home';
 
-  const renderTab = (route, index) => {
+  const renderTab = (name) => {
+    const index = routes.findIndex((r) => r.name === name);
+    const route = routes[index];
     const isFocused = state.index === index;
     const onPress = () => {
       const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
@@ -119,20 +132,22 @@ function CustomTabBar({ state, navigation }) {
   return (
     <View style={styles.barWrap}>
       <View style={styles.bar}>
-        {renderTab(routes[0], 0)}
-        {renderTab(routes[1], 1)}
+        {renderTab('NewsTab')}
+        {renderTab('PackagesTab')}
         <View style={styles.centerSlot}>
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => navigation.navigate('Home', { screen: 'HomeTab' })}
-            style={styles.centerBtn}
+            style={[styles.centerBtn, homeFocused && styles.centerBtnActive]}
+            accessibilityRole="button"
+            accessibilityLabel="Home"
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Image source={require('../../assets/logo-badge.png')} style={styles.centerLogo} resizeMode="contain" />
           </TouchableOpacity>
         </View>
-        {renderTab(routes[2], 2)}
-        {renderTab(routes[3], 3)}
+        {renderTab('ClassesTab')}
+        {renderTab('ProfileTab')}
       </View>
     </View>
   );
@@ -142,6 +157,7 @@ export default function MainTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={(props) => <CustomTabBar {...props} />}>
       <Tab.Screen name="Home" component={HomeStackScreen} />
+      <Tab.Screen name="NewsTab" component={NewsStackScreen} />
       <Tab.Screen name="PackagesTab" component={PackagesStackScreen} />
       <Tab.Screen name="ClassesTab" component={ClassesStackScreen} />
       <Tab.Screen name="ProfileTab" component={ProfileStackScreen} />
@@ -174,5 +190,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: colors.red,
   },
+  centerBtnActive: { borderColor: colors.white },
   centerLogo: { width: '100%', height: '100%' },
 });
