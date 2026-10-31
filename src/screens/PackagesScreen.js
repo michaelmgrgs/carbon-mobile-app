@@ -4,7 +4,8 @@ import api from '../services/api';
 import { Screen, Card, Badge } from '../components/UI';
 import { colors, typography } from '../theme/theme';
 
-const BRANCHES = ['All', 'CFC', 'Sheraton'];
+// CFC is hidden in the app for now; add it back here to show its tab again.
+const BRANCHES = ['All', 'Sheraton'];
 
 export default function PackagesScreen({ navigation }) {
   const [packages, setPackages] = useState([]);
