@@ -1,8 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator, ScrollView, Modal, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../services/api';
 import { Screen, Card, Badge, PrimaryButton } from '../components/UI';
+import SmartImage from '../components/SmartImage';
 import { colors, typography } from '../theme/theme';
 
 // CFC is hidden in the app for now; add it back here to show its tab again.
@@ -41,6 +43,7 @@ export default function ClassesScreen() {
   const [branch, setBranch] = useState('All');
   const [loading, setLoading] = useState(true);
   const [bookingId, setBookingId] = useState(null);
+  const [openClass, setOpenClass] = useState(null); // class shown in the detail sheet
   const [days, setDays] = useState(buildDays);
   const [selectedDate, setSelectedDate] = useState(() => ymd(new Date()));
   const stripRef = useRef(null);
@@ -67,6 +70,7 @@ export default function ClassesScreen() {
     try {
       const res = await api.post(`/classes/${cls.classId}/book`, { classDate: cls.date });
       Alert.alert('Booked! ✅', `${res.data.message}\nSessions left: ${res.data.sessionsLeft}`);
+      setOpenClass((c) => (c && c.classId === cls.classId && c.date === cls.date ? { ...c, isBookedByMe: true } : c));
       load();
     } catch (err) {
       Alert.alert('Could not book', err.response?.data?.error || 'Please try again.');
@@ -78,6 +82,7 @@ export default function ClassesScreen() {
   const datesWithClasses = new Set(classes.map((c) => c.date));
   const dayClasses = classes.filter((c) => c.date === selectedDate);
   const selectedDay = days.find((d) => d.key === selectedDate);
+  const sheetDay = openClass ? days.find((d) => d.key === openClass.date) : null;
 
   return (
     <Screen>
@@ -135,9 +140,11 @@ export default function ClassesScreen() {
           renderItem={({ item: cls }) => {
                 const key = cls.classId + cls.date;
                 return (
+                  <TouchableOpacity activeOpacity={0.85} onPress={() => setOpenClass(cls)}>
                   <Card style={{ marginBottom: 10 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <View style={{ flex: 1 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <SmartImage uri={cls.classImageUrl} style={styles.thumb} logoSize={22} />
+                      <View style={{ flex: 1, marginRight: 10 }}>
                         <Text style={styles.className}>{cls.className}</Text>
                         <Text style={styles.classMeta}>
                           {formatTime(cls.startTime)} – {formatTime(cls.endTime)} · {cls.branchName} · {cls.coachName}
@@ -161,6 +168,7 @@ export default function ClassesScreen() {
                       )}
                     </View>
                   </Card>
+                  </TouchableOpacity>
                 );
           }}
           ListEmptyComponent={
@@ -170,6 +178,51 @@ export default function ClassesScreen() {
           }
         />
       )}
+
+      <Modal
+        visible={!!openClass}
+        animationType="slide"
+        presentationStyle={Platform.OS === 'ios' ? 'pageSheet' : 'fullScreen'}
+        onRequestClose={() => setOpenClass(null)}
+      >
+        {openClass ? (
+          <View style={styles.sheet}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+              <SmartImage uri={openClass.classImageUrl} style={styles.sheetImage} logoSize={80} />
+              <TouchableOpacity onPress={() => setOpenClass(null)} style={styles.sheetClose} accessibilityLabel="Close">
+                <Ionicons name="close" size={22} color={colors.white} />
+              </TouchableOpacity>
+              <View style={{ padding: 20 }}>
+                <Text style={styles.sheetTitle}>{openClass.className}</Text>
+                <Text style={styles.sheetMeta}>
+                  {sheetDay ? `${sheetDay.weekday}, ${sheetDay.dayNum} ${sheetDay.month} · ` : ''}
+                  {formatTime(openClass.startTime)} – {formatTime(openClass.endTime)}
+                </Text>
+                <Text style={styles.sheetMeta}>{openClass.branchName} · Coach {openClass.coachName}</Text>
+                {openClass.capacity != null && (
+                  <Text style={[styles.spots, { marginTop: 8 }]}>
+                    {openClass.isFull ? 'Full' : `${openClass.spotsLeft} of ${openClass.capacity} spots left`}
+                  </Text>
+                )}
+                {openClass.classDescription ? <Text style={styles.sheetDesc}>{openClass.classDescription}</Text> : null}
+                <View style={{ marginTop: 24 }}>
+                  {openClass.isBookedByMe ? (
+                    <Text style={styles.sheetBooked}>✓ You're booked for this class</Text>
+                  ) : openClass.isFull ? (
+                    <Text style={styles.sheetFull}>This class is full</Text>
+                  ) : (
+                    <PrimaryButton
+                      title="Book this class"
+                      loading={bookingId === openClass.classId + openClass.date}
+                      onPress={() => handleBook(openClass)}
+                    />
+                  )}
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        ) : null}
+      </Modal>
     </Screen>
   );
 }
@@ -182,6 +235,18 @@ const styles = StyleSheet.create({
   tabText: { color: colors.gray, fontWeight: '600', fontSize: 13 },
   tabTextActive: { color: colors.white },
   // Fixed height + no shrinking: a long class list below used to squash the strip.
+  thumb: { width: 48, height: 48, borderRadius: 24, marginRight: 12 },
+  sheet: { flex: 1, backgroundColor: colors.black },
+  sheetImage: { width: '100%', height: 260 },
+  sheetClose: {
+    position: 'absolute', top: 14, right: 14, width: 36, height: 36, borderRadius: 18,
+    backgroundColor: 'rgba(20,21,20,0.6)', alignItems: 'center', justifyContent: 'center',
+  },
+  sheetTitle: { color: colors.white, fontSize: 26, fontFamily: typography.fontFamily.display, textTransform: 'uppercase', letterSpacing: 0.5 },
+  sheetMeta: { color: colors.gray, fontSize: 14, marginTop: 6 },
+  sheetDesc: { color: colors.white, opacity: 0.85, fontSize: 15, lineHeight: 22, marginTop: 16 },
+  sheetBooked: { color: colors.success || '#3BB273', fontSize: 16, fontWeight: '700', textAlign: 'center' },
+  sheetFull: { color: colors.gray, fontSize: 16, fontWeight: '700', textAlign: 'center' },
   dayStripWrap: { flexGrow: 0, flexShrink: 0, height: 76 },
   dayStrip: { paddingHorizontal: 20, paddingVertical: 6, gap: 6, alignItems: 'center' },
   dayPill: {

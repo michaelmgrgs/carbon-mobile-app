@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
 import { Screen, Card, PrimaryButton, Input } from '../components/UI';
+import SmartImage from '../components/SmartImage';
 import { colors } from '../theme/theme';
 
 export default function PackageDetailScreen({ route, navigation }) {
@@ -27,7 +30,16 @@ export default function PackageDetailScreen({ route, navigation }) {
 
   return (
     <Screen>
-      <View style={{ padding: 20, paddingTop: 60 }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
+      <View>
+        <SmartImage uri={pkg.image_url} style={styles.hero} logoSize={90} />
+        <LinearGradient colors={['rgba(20,21,20,0.55)', 'transparent', colors.black]} locations={[0, 0.4, 1]} style={StyleSheet.absoluteFill} pointerEvents="none" />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityLabel="Back">
+          <Ionicons name="chevron-back" size={22} color={colors.white} />
+        </TouchableOpacity>
+      </View>
+      <View style={{ padding: 20, paddingTop: 4 }}>
         <Text style={styles.name}>{pkg.name}</Text>
         <Text style={styles.branch}>{pkg.branch_name}</Text>
         {pkg.description ? <Text style={styles.description}>{pkg.description}</Text> : null}
@@ -60,6 +72,8 @@ export default function PackageDetailScreen({ route, navigation }) {
           style={{ marginTop: 8 }}
         />
       </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
     </Screen>
   );
 }
@@ -74,9 +88,14 @@ function Row({ label, value, last }) {
 }
 
 const styles = StyleSheet.create({
+  hero: { width: '100%', height: 280 },
+  back: {
+    position: 'absolute', top: 54, left: 16, width: 38, height: 38, borderRadius: 19,
+    backgroundColor: 'rgba(20,21,20,0.6)', alignItems: 'center', justifyContent: 'center',
+  },
   name: { color: colors.white, fontSize: 26, fontWeight: '800' },
   branch: { color: colors.red, fontSize: 14, fontWeight: '700', marginTop: 6 },
-  description: { color: colors.gray, fontSize: 14, marginTop: 10, lineHeight: 20 },
+  description: { color: colors.white, opacity: 0.85, fontSize: 15, marginTop: 12, lineHeight: 22 },
   row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 12 },
   rowBorder: { borderBottomWidth: 1, borderBottomColor: colors.border },
   rowLabel: { color: colors.gray, fontSize: 14 },
