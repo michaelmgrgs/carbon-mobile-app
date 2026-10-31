@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
 import { Screen, Badge } from '../components/UI';
+import SmartImage from '../components/SmartImage';
 import { colors, typography } from '../theme/theme';
 import { formatDate } from '../utils/moment-lite';
 
@@ -36,7 +37,7 @@ export default function NewsDetailScreen({ route, navigation }) {
 
         {item ? (
           <>
-            {item.image_url ? <Image source={{ uri: item.image_url }} style={styles.image} /> : null}
+            {item.image_url ? <SmartImage uri={item.image_url} style={styles.image} logoSize={80} /> : null}
             <View style={styles.metaRow}>
               {item.is_pinned ? <Badge text="Pinned" tone="red" /> : <View />}
               <Text style={styles.date}>{formatDate(item.created_at)}</Text>

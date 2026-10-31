@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { Text, StyleSheet, FlatList, Image, View, RefreshControl, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, FlatList, View, RefreshControl, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../services/api';
 import { Screen, Card, Badge } from '../components/UI';
+import SmartImage from '../components/SmartImage';
 import { colors, typography } from '../theme/theme';
 import { formatDate } from '../utils/moment-lite';
 
@@ -31,7 +32,7 @@ export default function NewsScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('NewsDetail', { item })}>
           <Card style={{ marginBottom: 14 }}>
-            {item.image_url ? <Image source={{ uri: item.image_url }} style={styles.image} /> : null}
+            {item.image_url ? <SmartImage uri={item.image_url} style={styles.image} /> : null}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
               {item.is_pinned ? <Badge text="Pinned" tone="red" /> : <View />}
               <Text style={styles.date}>{formatDate(item.created_at)}</Text>
