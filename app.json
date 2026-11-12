@@ -2,7 +2,7 @@
   "expo": {
     "name": "Carbon",
     "slug": "carbon-app",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -71,9 +71,7 @@
         "projectId": "a5f5d0d1-cff8-4878-b78d-96916700d0b4"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.1",
     "owner": "carbon-egypt",
     "updates": {
       "url": "https://u.expo.dev/a5f5d0d1-cff8-4878-b78d-96916700d0b4"
